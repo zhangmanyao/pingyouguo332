@@ -79,5 +79,22 @@ app.controller("brandController",function($scope,$controller,brandService){
 			$scope.list = response.rows;
 		});
 	}
+
+	//导出
+    $scope.export = function(){
+        brandService.export().success(function(response){
+            // 判断保存是否成功:
+            if(response.flag==true){
+                // 保存成功
+                alert(response.message);
+                $scope.reloadList();
+                //$scope.selectIds = [];
+            }else{
+                // 保存失败
+                alert(response.message);
+            }
+        });
+    }
+
 	
 });
