@@ -21,5 +21,4 @@
     <dubbo:protocol name="dubbo" port="20880"/>
     <dubbo:annotation package="cn.itcast.core.service" />
 
-
 </beans>

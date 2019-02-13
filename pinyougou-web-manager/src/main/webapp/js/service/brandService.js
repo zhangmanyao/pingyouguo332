@@ -32,7 +32,7 @@ app.service("brandService",function($http){
 		return $http.get("../brand/selectOptionList.do");
 	}
 
-    this.export = function(){
+    /*this.export = function(){
         return $http.get("../brand/export.do");
-    }
+    }*/
 });
