@@ -20,23 +20,19 @@ public class SeckillController {
     @Reference
     private SeckillService seckillService;
 
-    /*    *
-         * 商品保存
-         * @param goodsVo
-         * @return
         @RequestMapping("/add.do")
-        public Result add(@RequestBody GoodsVo goodsVo){
+        public Result add(@RequestBody SeckillGoods seckillGoods){
             try {
                 // 设置当前商家的id
                 String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
-                goodsVo.getGoods().setSellerId(sellerId);
-                goodsService.add(goodsVo);
-                return new Result(true, "保存成功");
+                seckillGoods.setSellerId(sellerId);
+                seckillService.add(seckillGoods);
+                return new Result(true, "申请成功");
             } catch (Exception e) {
                 e.printStackTrace();
-                return new Result(false, "保存失败");
+                return new Result(false, "申请失败");
             }
-        }*/
+        }
     @RequestMapping("/findPage.do")
     public PageResult findPage(Integer page, Integer rows) {
         return seckillService.findPage(page, rows);

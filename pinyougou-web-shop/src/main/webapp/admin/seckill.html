@@ -38,7 +38,7 @@
 		  <div class="pull-left">
 			  <div class="form-group form-inline">
 				  <div class="btn-group">
-					  <a href="goods_edit.html"  class="btn btn-default">新建</a>
+					  <button type="button" class="btn btn-default" title="申请" data-toggle="modal" data-target="#editModal" ng-click="entity={}"><i class="fa fa-file-o"></i> 申请</button>
 					  <button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
 					  <button type="button" class="btn btn-default" title="提交审核" ><i class="fa fa-check"></i> 提交审核</button>
 					  <button type="button" class="btn btn-default" title="屏蔽" onclick='confirm("你确认要屏蔽吗？")'><i class="fa fa-ban"></i> 屏蔽</button>
@@ -96,6 +96,7 @@
 				  </td>
 				  <td class="text-center">
 					  <a class="btn bg-olive btn-xs" href="goods_edit.html#?id={{entity.id}}">修改</a>
+					  <a class="btn bg-olive btn-xs" href="goods_edit.html#?id={{entity.id}}">删除</a>
 				  </td>
 			  </tr>
 			  </tbody>
@@ -117,22 +118,30 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">品牌编辑</h3>
+			<h3 id="myModalLabel">秒杀商品编辑</h3>
 		</div>
-		<div class="modal-body">		
+		<div class="modal-body">
 			<table class="table table-bordered table-striped"  width="800px">
 		      	<tr>
-		      		<td>品牌名称</td>
-		      		<td><input ng-model="entity.name" class="form-control" placeholder="品牌名称" >  </td>
-		      	</tr>		      	
+		      		<td>商品ID</td>
+		      		<td><input ng-model="entity.goodsId" class="form-control" placeholder="商品ID" >  </td>
+		      	</tr>
 		      	<tr>
-		      		<td>首字母</td>
-		      		<td><input ng-model="entity.firstChar" class="form-control" placeholder="首字母">  </td>
-		      	</tr>		      	
+		      		<td>商品描述</td>
+		      		<td><input ng-model="entity.title" class="form-control" placeholder="商品描述">  </td>
+		      	</tr>
+				<tr>
+					<td>商品价格</td>
+					<td><input ng-model="entity.price" class="form-control" placeholder="商品价格">  </td>
+				</tr>
+				<tr>
+					<td>库存量</td>
+					<td><input ng-model="entity.num" class="form-control" placeholder="库存量">  </td>
+				</tr>
 			 </table>				
 		</div>
 		<div class="modal-footer">						
-			<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()">保存</button>
+			<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()">申请</button>
 			<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 		</div>
 	  </div>
