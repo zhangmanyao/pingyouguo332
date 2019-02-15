@@ -11,4 +11,6 @@ public interface SeckillService {
     public PageResult searchForShop(Integer page, Integer rows, SeckillGoods seckillGoods);
 
     PageResult findPage(Integer page, Integer rows);
+
+    void add(SeckillGoods seckillGoods);
 }

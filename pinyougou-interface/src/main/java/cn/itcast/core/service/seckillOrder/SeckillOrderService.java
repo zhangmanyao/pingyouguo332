@@ -8,5 +8,7 @@ public interface SeckillOrderService {
 
 
     public PageResult searchForShop(Integer page, Integer rows, SeckillOrder seckillOrder);
+
+    PageResult searchForShop1(Integer page, Integer rows, SeckillOrder seckillOrder);
 }
 
