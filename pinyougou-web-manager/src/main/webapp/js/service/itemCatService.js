@@ -2,6 +2,7 @@
 app.service('itemCatService',function($http){
 	    	
 	//读取列表数据绑定到表单中
+	//777
 	this.findAll=function(){
 		return $http.get('../itemCat/findAll.do');		
 	}
@@ -28,13 +29,15 @@ app.service('itemCatService',function($http){
 	//搜索
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../itemCat/search.do?page='+page+"&rows="+rows, searchEntity);
-	}    	
-	
-	this.findByParentId = function(parentId){
-		return $http.get("../itemCat/findByParentId.do?parentId="+parentId);
 	}
-	//分类审核
+
+    //分类审核
     this.updateStatus = function(ids,status){
         return $http.get('../itemCat/updateStatus.do?ids='+ids+"&status="+status);
     }
+
+	this.findByParentId = function(parentId){
+		return $http.get("../itemCat/findByParentId.do?parentId="+parentId);
+	}
+
 });
