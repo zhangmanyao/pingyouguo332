@@ -107,6 +107,5 @@ public class StaticPageServiceImpl implements StaticPageService, ServletContextA
         dataModel.put("itemList", itemList);
         return dataModel;
     }
-
-
 }
+

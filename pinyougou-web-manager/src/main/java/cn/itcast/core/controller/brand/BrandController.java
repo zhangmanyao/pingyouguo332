@@ -169,15 +169,13 @@ public class BrandController {
     /**
      * excel表导入
      *
-     * @param request
-     * @param response
      * @param upload_file
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "import.do")
     @ResponseBody
-    public Map import_excel_data(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile upload_file) throws Exception {
+    public Map import_excel_data(@RequestParam MultipartFile upload_file) throws Exception {
         Map<String, String> returnMap = new HashMap<>();
         List<Map<String, String>> data = null;
 

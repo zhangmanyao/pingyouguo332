@@ -170,23 +170,23 @@ public class ExportExcelUtil {
      * @throws IOException
      */
     public static List<Map<String, String>> parse(InputStream inputStream, int headerIndex) throws IOException {
-        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-        int maxcolumnIndex = 0;
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();  //创建返回值类型
+        //int maxcolumnIndex = 0;
         XSSFWorkbook wb = new XSSFWorkbook(inputStream);
         XSSFCell cell = null;
-        for (int sheetIndex = 0; sheetIndex < wb.getNumberOfSheets(); sheetIndex++) {
-            XSSFSheet st = wb.getSheetAt(sheetIndex);
-            List<String> headers = new ArrayList<String>();
+        for (int sheetIndex = 0; sheetIndex < wb.getNumberOfSheets(); sheetIndex++) {  //遍历sheet
+            XSSFSheet st = wb.getSheetAt(sheetIndex);  //获取索引为sheetIndex的sheet
+            List<String> headers = new ArrayList<>();
             for (int rowIndex = 0; rowIndex <= st.getLastRowNum(); rowIndex++) {
                 XSSFRow row = st.getRow(rowIndex);
                 if (row == null) {
                     continue;
                 }
-                int currentcolumnIndex = row.getLastCellNum() + 1;
+                /*int currentcolumnIndex = row.getLastCellNum() + 1;
                 if (currentcolumnIndex > maxcolumnIndex) {
                     maxcolumnIndex = currentcolumnIndex;
-                }
-                Map<String, String> rows = new LinkedHashMap<String, String>();
+                }*/
+                Map<String, String> rows = new LinkedHashMap<>();
 
                 for (int columnIndex = 0; columnIndex <= row.getLastCellNum(); columnIndex++) {
                     String value = "";

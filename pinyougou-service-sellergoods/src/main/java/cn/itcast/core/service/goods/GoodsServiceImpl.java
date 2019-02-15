@@ -67,6 +67,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 保存商品
+     *
      * @param goodsVo
      */
     @Transactional
@@ -82,10 +83,10 @@ public class GoodsServiceImpl implements GoodsService {
         goodsDescDao.insertSelective(goodsDesc);
         // 保存商品对应的库存信息
         // 是否启用规格
-        if("1".equals(goods.getIsEnableSpec())){
+        if ("1".equals(goods.getIsEnableSpec())) {
             // 启用规格：一个spu对应多个sku
             List<Item> itemList = goodsVo.getItemList();
-            if(itemList != null && itemList.size() > 0){
+            if (itemList != null && itemList.size() > 0) {
                 for (Item item : itemList) {
                     // 商品的标题：spu的名称+spu副标题+规格名称
                     // 例子：小米8SE 游戏机 16G  联通3G
@@ -104,7 +105,7 @@ public class GoodsServiceImpl implements GoodsService {
                     itemDao.insertSelective(item);
                 }
             }
-        }else{
+        } else {
             // 不启用规格：一个spu对应一个sku
             Item item = new Item();
             item.setTitle(goods.getGoodsName() + " " + goods.getCaption()); // 标题
@@ -120,6 +121,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 商家系统下的商品列表查询
+     *
      * @param page
      * @param rows
      * @param goods
@@ -138,7 +140,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     /**
-     *
      * @param id
      * @return
      */
@@ -162,6 +163,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 更新商品
+     *
      * @param goodsVo
      */
     @Transactional
@@ -180,10 +182,10 @@ public class GoodsServiceImpl implements GoodsService {
         itemDao.deleteByExample(itemQuery);
         // 再插入
         // 是否启用规格
-        if("1".equals(goods.getIsEnableSpec())){
+        if ("1".equals(goods.getIsEnableSpec())) {
             // 启用规格：一个spu对应多个sku
             List<Item> itemList = goodsVo.getItemList();
-            if(itemList != null && itemList.size() > 0){
+            if (itemList != null && itemList.size() > 0) {
                 for (Item item : itemList) {
                     // 商品的标题：spu的名称+spu副标题+规格名称
                     // 例子：小米8SE 游戏机 16G  联通3G
@@ -202,7 +204,7 @@ public class GoodsServiceImpl implements GoodsService {
                     itemDao.insertSelective(item);
                 }
             }
-        }else{
+        } else {
             // 不启用规格：一个spu对应一个sku
             Item item = new Item();
             item.setTitle(goods.getGoodsName() + " " + goods.getCaption()); // 标题
@@ -218,6 +220,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 运营系统查询待审核的商品列表
+     *
      * @param page
      * @param rows
      * @param goods
@@ -230,7 +233,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 设置查询条件：待审核并且是未删除
         GoodsQuery goodsQuery = new GoodsQuery();
         GoodsQuery.Criteria criteria = goodsQuery.createCriteria();
-        if(goods.getAuditStatus() != null && !"".equals(goods.getAuditStatus().trim())){
+        if (goods.getAuditStatus() != null && !"".equals(goods.getAuditStatus().trim())) {
             criteria.andAuditStatusEqualTo(goods.getAuditStatus().trim());
         }
         criteria.andIsDeleteIsNull();   // null：未删除   1：已删除  MySQL查询：建议is null
@@ -243,21 +246,23 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 审核商品
+     *
      * @param ids
      * @param status
      */
     @Transactional
     @Override
     public void updateStatus(Long[] ids, String status) {
-        if(ids != null && ids.length > 0){
+        if (ids != null && ids.length > 0) {
             Goods goods = new Goods();
             goods.setAuditStatus(status);
             for (final Long id : ids) {
                 goods.setId(id);
                 // 1、更新商品的审核状态
                 goodsDao.updateByPrimaryKeySelective(goods);
+
                 // 如果审核通过
-                if("1".equals(status)){
+               /* if("1".equals(status)){
                     // 2、将商品进行上架
                     // 说明：今天将所有的库存信息保存到索引库中(目的：为了索引库中有很多的数据，可以搜索操作)
 //                    dataImportToSolrForItem();
@@ -274,60 +279,20 @@ public class GoodsServiceImpl implements GoodsService {
                             return textMessage;
                         }
                     });
-                }
+                }*/
             }
-        }
-    }
-
-    // 将商品对应的库存信息保存到索引库中
-    private void updateItemToSolr(Long id) {
-        // 查询该商品对应的库存信息
-        ItemQuery itemQuery = new ItemQuery();
-        itemQuery.createCriteria().andGoodsIdEqualTo(id).andIsDefaultEqualTo("1").andStatusEqualTo("1");
-        List<Item> items = itemDao.selectByExample(itemQuery);
-        if(items != null && items.size() > 0){
-            // 处理动态字段
-            for (Item item : items) {
-                // 栗子：{"机身内存":"16G","网络":"联通3G"}
-                String spec = item.getSpec();
-                // 拼接的动态字段：item_spec_机身内存 、 item_spec_网络
-                Map<String, String> specMap = JSON.parseObject(spec, Map.class);
-                item.setSpecMap(specMap);
-            }
-            solrTemplate.saveBeans(items);
-            solrTemplate.commit();
-        }
-    }
-
-    /**
-     * 将全部库存的数据保存到索引库中
-     */
-    private void dataImportToSolrForItem() {
-        ItemQuery itemQuery = new ItemQuery();
-        itemQuery.createCriteria().andStatusEqualTo("1"); // 将正常的库存信息保存到索引库中
-        List<Item> items = itemDao.selectByExample(itemQuery);
-        if(items != null && items.size() > 0){
-            // 处理动态字段
-            for (Item item : items) {
-                // 栗子：{"机身内存":"16G","网络":"联通3G"}
-                String spec = item.getSpec();
-                // 拼接的动态字段：item_spec_机身内存 、 item_spec_网络
-                Map<String, String> specMap = JSON.parseObject(spec, Map.class);
-                item.setSpecMap(specMap);
-            }
-            solrTemplate.saveBeans(items);
-            solrTemplate.commit();
         }
     }
 
     /**
      * 删除商品
+     *
      * @param ids
      */
     @Transactional
     @Override
     public void delete(Long[] ids) {
-        if(ids != null && ids.length > 0){
+        if (ids != null && ids.length > 0) {
             Goods goods = new Goods();
             goods.setIsDelete("1"); // 1：删除的状态
             for (final Long id : ids) {
@@ -351,6 +316,87 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+    /**
+     * 商品是否上架
+     *
+     * @param id
+     * @param status
+     */
+    @Transactional
+    @Override
+    public void isMarketable(final String id, String status) {
+        Goods goods = new Goods();
+        goods.setIsMarketable(status);
+        goods.setId(Long.valueOf(id));
+        goodsDao.updateByPrimaryKeySelective(goods);
+        Goods new_goods = goodsDao.selectByPrimaryKey(Long.parseLong(id));
+
+        // 如果上架成功
+        if ("1".equals(status) && "1".equals(new_goods.getAuditStatus())) {
+            jmsTemplate.send(topicPageAndSolrDestination, new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    // 将商品的id封装成消息体进行发送
+                    TextMessage textMessage = session.createTextMessage(id);
+                    return textMessage;
+                }
+            });
+        }
+
+        //如果下架成功
+        if ("2".equals(status)) {
+            jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    // 将数据封装到消息体
+                    TextMessage textMessage = session.createTextMessage(String.valueOf(id));
+                    return textMessage;
+                }
+            });
+        }
+    }
+
+    // 将商品对应的库存信息保存到索引库中
+    private void updateItemToSolr(Long id) {
+        // 查询该商品对应的库存信息
+        ItemQuery itemQuery = new ItemQuery();
+        itemQuery.createCriteria().andGoodsIdEqualTo(id).andIsDefaultEqualTo("1").andStatusEqualTo("1");
+        List<Item> items = itemDao.selectByExample(itemQuery);
+        if (items != null && items.size() > 0) {
+            // 处理动态字段
+            for (Item item : items) {
+                // 栗子：{"机身内存":"16G","网络":"联通3G"}
+                String spec = item.getSpec();
+                // 拼接的动态字段：item_spec_机身内存 、 item_spec_网络
+                Map<String, String> specMap = JSON.parseObject(spec, Map.class);
+                item.setSpecMap(specMap);
+            }
+            solrTemplate.saveBeans(items);
+            solrTemplate.commit();
+        }
+    }
+
+    /**
+     * 将全部库存的数据保存到索引库中
+     */
+    private void dataImportToSolrForItem() {
+        ItemQuery itemQuery = new ItemQuery();
+        itemQuery.createCriteria().andStatusEqualTo("1"); // 将正常的库存信息保存到索引库中
+        List<Item> items = itemDao.selectByExample(itemQuery);
+        if (items != null && items.size() > 0) {
+            // 处理动态字段
+            for (Item item : items) {
+                // 栗子：{"机身内存":"16G","网络":"联通3G"}
+                String spec = item.getSpec();
+                // 拼接的动态字段：item_spec_机身内存 、 item_spec_网络
+                Map<String, String> specMap = JSON.parseObject(spec, Map.class);
+                item.setSpecMap(specMap);
+            }
+            solrTemplate.saveBeans(items);
+            solrTemplate.commit();
+        }
+    }
+
     // 设置item的公共的属性
     private void setItemAttribute(Goods goods, GoodsDesc goodsDesc, Item item) {
         // 商品图片
@@ -359,7 +405,7 @@ public class GoodsServiceImpl implements GoodsService {
         // {"color":"黑色","url":"http://192.168.25.133/group1/M00/00/00/wKgZhVmOXrWAcIsOAAETwD7A1Is874.jpg"}]
         String itemImages = goodsDesc.getItemImages();
         List<Map> images = JSON.parseArray(itemImages, Map.class);
-        if(images != null && images.size() > 0){
+        if (images != null && images.size() > 0) {
             String image = images.get(0).get("url").toString();
             item.setImage(image);
         }
