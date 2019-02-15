@@ -82,9 +82,10 @@ app.controller("brandController",function($scope,$controller,brandService){
 
     // 显示状态
     $scope.status = ["未审核","审核通过","审核未通过","关闭"];
+
     // 审核的方法:
     $scope.updateStatus = function(status){
-        goodsService.updateStatus($scope.selectIds,status).success(function(response){
+       brandService.updateStatus($scope.selectIds,status).success(function(response){
             if(response.flag){
                 $scope.reloadList();//刷新列表
                 $scope.selectIds = [];

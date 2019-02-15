@@ -31,4 +31,11 @@ public interface ItemCatService {
      * @param itemCat
      */
     public void add(ItemCat itemCat);
+
+    /**
+     * 分类审核
+     * @param ids
+     * @param status
+     */
+    void updateStatus(Long[] ids, String status);
 }

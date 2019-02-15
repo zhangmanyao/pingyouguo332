@@ -49,4 +49,11 @@ public interface SpecService {
      * @return
      */
     public List<Map<String, String>> selectOptionList();
+
+    /**
+     * 规格审核
+     * @param ids
+     * @param status
+     */
+    void updateStatus(Long[] ids, String status);
 }

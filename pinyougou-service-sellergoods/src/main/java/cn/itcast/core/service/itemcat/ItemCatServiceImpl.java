@@ -1,10 +1,12 @@
 package cn.itcast.core.service.itemcat;
 
 import cn.itcast.core.dao.item.ItemCatDao;
+import cn.itcast.core.pojo.good.Brand;
 import cn.itcast.core.pojo.item.ItemCat;
 import cn.itcast.core.pojo.item.ItemCatQuery;
 import com.alibaba.dubbo.config.annotation.Service;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -66,5 +68,24 @@ public class ItemCatServiceImpl implements ItemCatService {
     @Override
     public void add(ItemCat itemCat) {
         itemCatDao.insertSelective(itemCat);
+    }
+
+    /**
+     * 分类审核
+     * @param ids
+     * @param status
+     */
+    @Transactional
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        if (ids != null && ids.length > 0) {
+            ItemCat itemCat = new ItemCat();
+            itemCat.setAuditStatus(status);
+            for (final Long id : ids) {
+                itemCat.setId(id);
+                //更新商品审核状态
+                itemCatDao.updateByPrimaryKeySelective(itemCat);
+            }
+        }
     }
 }

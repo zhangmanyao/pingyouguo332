@@ -99,4 +99,21 @@ public class SpecController {
         return specService.selectOptionList();
     }
 
+    /**
+     * 规格审核
+     * @param ids
+     * @param status
+     * @return
+     */
+    @RequestMapping("/updateStatus.do")
+    public Result updateStatus(Long[] ids, String status){
+        try {
+            specService.updateStatus(ids, status);
+            return new Result(true, "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "操作失败");
+        }
+    }
+
 }

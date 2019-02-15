@@ -117,4 +117,21 @@ public class BrandController {
     public List<Map<String, String>> selectOptionList(){
         return brandService.selectOptionList();
     }
+
+    /**
+     * 审核商品
+     * @param ids
+     * @param status
+     * @return
+     */
+    @RequestMapping("/updateStatus.do")
+    public Result updateStatus(Long[] ids, String status){
+        try {
+            brandService.updateStatus(ids, status);
+            return new Result(true, "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "操作失败");
+        }
+    }
 }
