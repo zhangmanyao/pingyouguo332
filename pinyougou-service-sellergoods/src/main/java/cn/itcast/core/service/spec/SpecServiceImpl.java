@@ -41,6 +41,8 @@ public class SpecServiceImpl implements SpecService {
         SpecificationQuery specificationQuery = new SpecificationQuery();
         if(specification.getSpecName() != null && !"".equals(specification.getSpecName().trim())){
             specificationQuery.createCriteria().andSpecNameLike("%" + specification.getSpecName().trim() +"%");
+        }if(specification.getAuditStatus() != null && !"".equals(specification.getAuditStatus().trim())){
+            specificationQuery.createCriteria().andSpecNameLike("%" + specification.getAuditStatus().trim() +"%");
         }
         specificationQuery.setOrderByClause("id desc");
         // 3、根据条件查询

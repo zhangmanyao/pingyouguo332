@@ -1,16 +1,14 @@
 package cn.itcast.core.service.content;
 
-import java.util.List;
-
+import cn.itcast.core.dao.ad.ContentCategoryDao;
 import cn.itcast.core.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import cn.itcast.core.pojo.ad.ContentCategory;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.itcast.core.dao.ad.ContentCategoryDao;
-import cn.itcast.core.pojo.ad.ContentCategory;
+import java.util.List;
 
 @Service
 public class ContentCategoryServiceImpl implements ContentCategoryService {

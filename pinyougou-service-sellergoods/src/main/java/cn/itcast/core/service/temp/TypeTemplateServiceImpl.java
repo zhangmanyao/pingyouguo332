@@ -60,6 +60,8 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
         TypeTemplateQuery typeTemplateQuery = new TypeTemplateQuery();
         if(typeTemplate.getName() != null && !"".equals(typeTemplate.getName().trim())){
             typeTemplateQuery.createCriteria().andNameLike("%" + typeTemplate.getName().trim() + "%");
+        }if(typeTemplate.getAuditStatus() != null && !"".equals(typeTemplate.getAuditStatus().trim())){
+            typeTemplateQuery.createCriteria().andNameLike("%" + typeTemplate.getAuditStatus().trim() + "%");
         }
         // 3、根据条件查询
         Page<TypeTemplate> p = (Page<TypeTemplate>) typeTemplateDao.selectByExample(typeTemplateQuery);
