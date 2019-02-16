@@ -128,8 +128,12 @@ public class BrandController {
     }
 
     /**
+<<<<<<< HEAD
      * 新增规格时初始化品牌列表
      *
+=======
+     * 新增规格时初始化品牌列表4444444444444
+>>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
      * @return
      */
     @RequestMapping("/selectOptionList.do")
@@ -138,6 +142,7 @@ public class BrandController {
     }
 
     /**
+<<<<<<< HEAD
      * 导出报表
      *
      * @param response
@@ -208,3 +213,19 @@ public class BrandController {
         return returnMap;
     }
 }
+=======
+     * 审核商品
+     * @param ids
+     */
+    @RequestMapping("/updateStatus.do")
+    public Result updateStatus(Long[] ids, String status){
+        try {
+            brandService.updateStatus(ids, status);
+            return new Result(true, "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "操作失败");
+        }
+    }
+}
+>>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b

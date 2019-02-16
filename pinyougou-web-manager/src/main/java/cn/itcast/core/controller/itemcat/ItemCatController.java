@@ -53,4 +53,21 @@ public class ItemCatController {
             return new Result(false, "保存失败");
         }
     }
+
+    /**
+     * 分类的审核
+     * @param ids
+     * @param status
+     * @return
+     */
+    @RequestMapping("/updateStatus.do")
+    public Result updateStatus(Long[] ids, String status){
+        try {
+            itemCatService.updateStatus(ids, status);
+            return new Result(true, "操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "操作失败");
+        }
+    }
 }

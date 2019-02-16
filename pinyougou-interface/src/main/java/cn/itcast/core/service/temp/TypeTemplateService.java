@@ -42,4 +42,11 @@ public interface TypeTemplateService {
      * @return
      */
     public List<TypeTemplate> findAll();
+
+    /**
+     * 模板审核
+     * @param ids
+     * @param status
+     */
+    void updateStatus(Long[] ids, String status);
 }

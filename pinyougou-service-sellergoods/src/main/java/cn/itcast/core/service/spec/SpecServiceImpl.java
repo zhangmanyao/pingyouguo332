@@ -3,6 +3,8 @@ package cn.itcast.core.service.spec;
 import cn.itcast.core.dao.specification.SpecificationDao;
 import cn.itcast.core.dao.specification.SpecificationOptionDao;
 import cn.itcast.core.entity.PageResult;
+import cn.itcast.core.pojo.good.Brand;
+import cn.itcast.core.pojo.good.BrandQuery;
 import cn.itcast.core.pojo.specification.Specification;
 import cn.itcast.core.pojo.specification.SpecificationOption;
 import cn.itcast.core.pojo.specification.SpecificationOptionQuery;
@@ -39,8 +41,13 @@ public class SpecServiceImpl implements SpecService {
         PageHelper.startPage(page, rows);
         // 2、设置查询条件
         SpecificationQuery specificationQuery = new SpecificationQuery();
+        // 封装查询条件：其始就是在给我们拼接查询条件
+        SpecificationQuery.Criteria criteria = specificationQuery.createCriteria();
         if(specification.getSpecName() != null && !"".equals(specification.getSpecName().trim())){
-            specificationQuery.createCriteria().andSpecNameLike("%" + specification.getSpecName().trim() +"%");
+            criteria.andSpecNameLike("%" + specification.getSpecName().trim() +"%");
+        }
+        if(specification.getAuditStatus() != null && !"".equals(specification.getAuditStatus().trim())){
+            criteria.andAuditStatusEqualTo(specification.getAuditStatus().trim());
         }
         specificationQuery.setOrderByClause("id desc");
         // 3、根据条件查询
@@ -146,5 +153,24 @@ public class SpecServiceImpl implements SpecService {
     @Override
     public List<Map<String, String>> selectOptionList() {
         return specificationDao.selectOptionList();
+    }
+
+    /**
+     * 规格审核
+     * @param ids
+     * @param status
+     */
+    @Transactional
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        if (ids != null && ids.length > 0) {
+            Specification specification = new Specification();
+            specification.setAuditStatus(status);
+            for (final Long id : ids) {
+                specification.setId(id);
+                //更新商品审核状态
+                specificationDao.updateByPrimaryKeySelective(specification);
+            }
+        }
     }
 }
