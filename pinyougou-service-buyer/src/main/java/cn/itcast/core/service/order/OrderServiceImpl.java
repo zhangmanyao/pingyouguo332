@@ -4,19 +4,25 @@ import cn.itcast.core.dao.item.ItemDao;
 import cn.itcast.core.dao.log.PayLogDao;
 import cn.itcast.core.dao.order.OrderDao;
 import cn.itcast.core.dao.order.OrderItemDao;
+import cn.itcast.core.entity.PageResult;
 import cn.itcast.core.pojo.cart.Cart;
 import cn.itcast.core.pojo.item.Item;
 import cn.itcast.core.pojo.log.PayLog;
 import cn.itcast.core.pojo.order.Order;
 import cn.itcast.core.pojo.order.OrderItem;
+import cn.itcast.core.pojo.order.OrderQuery;
 import cn.itcast.core.utils.uniquekey.IdWorker;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -39,6 +45,60 @@ public class OrderServiceImpl implements OrderService {
 
     @Resource
     private PayLogDao payLogDao;
+
+
+
+    /**
+     * 商家查询订单
+     * @param pageNo
+     * @param pageSize
+     * @param order
+     * @return
+     */
+    @Override
+    public PageResult searchForShop(Integer pageNo, Integer pageSize, Order order) {
+        PageHelper.startPage(pageNo,pageSize);
+        OrderQuery orderQuery = new OrderQuery();
+        OrderQuery.Criteria criteria = orderQuery.createCriteria();
+        //封装根据订单状态查询条件
+        if(order.getStatus()!=null&&!"".equals(order.getStatus().trim())){
+            criteria.andStatusEqualTo(order.getStatus());
+        }
+        //封装根据订单编号查询条件
+        if(order.getOrderId()!=null&&!"".equals(order.getOrderId().toString().trim())){
+            criteria.andOrderIdEqualTo(order.getOrderId());
+        }
+        //封装根据用户名查询条件
+        if(order.getUserId()!=null&&!"".equals(order.getUserId().trim())){
+
+            criteria.andUserIdEqualTo(order.getUserId());
+        }
+        //封装根据商家id查询条件
+        if(order.getSellerId()!=null&&!"".equals(order.getSellerId().trim())){
+            criteria.andSellerIdEqualTo(order.getSellerId());
+        }
+        orderQuery.setOrderByClause("create_time desc");
+        Page<Order> page = (Page<Order>)orderDao.selectByExample(orderQuery);
+        return new PageResult(page.getResult(),page.getTotal());
+    }
+    @Transactional
+    @Override
+    public void updateOrderStatus(Long[] ids,String status) {
+        if (ids!=null&&ids.length>0){
+            Order order = new Order();
+            order.setStatus(status);
+            for (Long id : ids) {
+                order.setOrderId(id);
+                 orderDao.updateByPrimaryKeySelective(order);
+
+                 }
+        }
+
+
+
+
+
+    }
 
     /**
      * 保存订单
@@ -107,4 +167,5 @@ public class OrderServiceImpl implements OrderService {
         // 订单提交成功后，清空购物车
         redisTemplate.boundHashOps("BUYER_CART").delete(username);
     }
+    //添加一行注释
 }

@@ -7,6 +7,7 @@ import cn.itcast.core.dao.item.ItemCatDao;
 import cn.itcast.core.dao.item.ItemDao;
 import cn.itcast.core.dao.seller.SellerDao;
 import cn.itcast.core.entity.PageResult;
+import cn.itcast.core.pojo.cart.Cart;
 import cn.itcast.core.pojo.good.Goods;
 import cn.itcast.core.pojo.good.GoodsDesc;
 import cn.itcast.core.pojo.good.GoodsQuery;
@@ -18,6 +19,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.SimpleQuery;
 import org.springframework.jms.core.JmsTemplate;
@@ -27,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.jms.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class GoodsServiceImpl implements GoodsService {
@@ -64,6 +63,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Resource
     private Destination queueSolrDeleteDestination;
+    @Resource
+    RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 保存商品
@@ -289,7 +290,7 @@ public class GoodsServiceImpl implements GoodsService {
      *
      * @param ids
      */
-    @Transactional
+    /*@Transactional
     @Override
     public void delete(Long[] ids) {
         if (ids != null && ids.length > 0) {
@@ -314,7 +315,7 @@ public class GoodsServiceImpl implements GoodsService {
                 // 3、删除静态页：可选(在本项目中不删除)
             }
         }
-    }
+    }*/
 
     /**
      * 商品是否上架
@@ -397,6 +398,38 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+    /**
+     * 删除商品
+     *
+     * @param ids
+     */
+    @Transactional
+    @Override
+    public void delete(Long[] ids) {
+        if (ids != null && ids.length > 0) {
+            Goods goods = new Goods();
+            goods.setIsDelete("1"); // 1：删除的状态
+            for (final Long id : ids) {
+                goods.setId(id);
+                goodsDao.updateByPrimaryKeySelective(goods);
+                // 将商品进行下架：将商品信息从索引库中删除
+//                SimpleQuery query = new SimpleQuery("item_goodsid:"+id);
+//                solrTemplate.delete(query);
+//                solrTemplate.commit();
+                // 将商品的id发送到mq中
+                jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+                    @Override
+                    public Message createMessage(Session session) throws JMSException {
+                        // 将数据封装到消息体
+                        TextMessage textMessage = session.createTextMessage(String.valueOf(id));
+                        return textMessage;
+                    }
+                });
+                // 3、删除静态页：可选(在本项目中不删除)
+            }
+        }
+    }
+
     // 设置item的公共的属性
     private void setItemAttribute(Goods goods, GoodsDesc goodsDesc, Item item) {
         // 商品图片
@@ -418,5 +451,32 @@ public class GoodsServiceImpl implements GoodsService {
         item.setCategory(itemCatDao.selectByPrimaryKey(goods.getCategory3Id()).getName()); // 分类名称
         item.setBrand(brandDao.selectByPrimaryKey(goods.getBrandId()).getName());    // 品牌名称
         item.setSeller(sellerDao.selectByPrimaryKey(goods.getSellerId()).getNickName());   // 商家店铺名称
+    }
+
+    /**
+     * 收藏商品到缓存中
+     *
+     * @param itemId
+     */
+    @Override
+    public void collectGoodsToRedis(Long itemId, String username) {
+        List<Goods> collectionList = (List<Goods>) redisTemplate.boundHashOps("Collection").get(username);
+        Item item = itemDao.selectByPrimaryKey(itemId);
+        // collectionList.add(itemId);
+        redisTemplate.boundHashOps("Collection").put(username, collectionList);
+
+    }
+
+    /**
+     * 从redis中获取收藏商品id
+     *
+     * @param username
+     * @return
+     */
+    //测试2
+    @Override
+    public List<Long> findcollectGoodsFromRedis(String username) {
+        return (List<Long>) redisTemplate.boundHashOps("Collection").get(username);
+
     }
 }
