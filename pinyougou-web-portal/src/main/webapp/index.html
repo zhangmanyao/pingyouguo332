@@ -20,10 +20,89 @@
     <script type="text/javascript" src="./js/base.js"></script>
     <script type="text/javascript" src="./js/service/contentService.js"></script>
     <script type="text/javascript" src="./js/controller/contentController.js"></script>
+<<<<<<< HEAD
     <script type="text/javascript" src="./js/controller/baseController.js"></script>
     <script type="text/javascript" src="./js/controller/itemCatController.js"></script>
     <script type="text/javascript" src="./js/service/itemCatService.js"></script>
 
+=======
+	<style>
+		*{
+			margin: 0;
+			padding:0;
+		}
+		ul{
+			list-style: none;
+		}
+		#right-nav{
+			width:40px;
+			height: 100%;
+			position: fixed;
+			top:0;
+			right:0;
+			z-index: 20;
+			border-right: 5px solid  #7A6E6E;
+		}
+		#right-nav .w{
+			position: fixed;
+			bottom:22px;
+			right:0;
+			width:40px;
+			height: 76%;
+		}
+		#right-nav-list1{
+			position: relative;
+			right: 0;
+			top: 0;
+			z-index: 20;
+		}
+		#right-nav-list2{
+			position: fixed;
+			right: 0;
+			bottom: 0;
+			z-index: 20;
+		}
+		#right-nav li{
+			position: relative;
+			left: 0;
+			top: 0;
+			height: 34px;
+			width: 40px;
+			margin-bottom: 1px;
+		}
+		#right-nav li a{
+			width: 100%;
+			height: 100%;
+			display: block;
+			background: #7a6e6e;
+			padding: 7px;
+			box-sizing: border-box;
+			border-radius: 3px;
+			/*transition: all linear 300ms;*/
+		}
+		#right-nav li div{
+			position: absolute;
+			left: 50px;
+			top: 0;
+			z-index: -1;
+			font-size: 12px;
+			background: #c81623;
+			color: #fff;
+			height: 34px;
+			width: 60px;
+			line-height: 31px;
+			text-align: center;
+			border-radius: 3px;
+			transition: all linear 300ms;
+		}
+		#right-nav li:hover,#right-nav li:hover a{
+			background-color: #c81623;
+		}
+		#right-nav li:hover div{
+			left:-58px;
+		}
+	</style>
+>>>>>>> 7ebc0c77260d27b80a086f6b677ae545ec816ce5
 </head>
 
 <body ng-app="pinyougou" ng-controller="baseController" ng-init="findItemCatList();findByCategoryId(1)">
@@ -914,6 +993,7 @@
     </div>
 </div>
 <!--页面底部END-->
+<<<<<<< HEAD
 <!-- 楼层位置 -->
 <div id="floor-index" class="floor-index">
     <ul>
@@ -1062,6 +1142,51 @@
     </div>
 </div>
 <!--购物车单元格 模板-->
+=======
+	<!-- 楼层位置 -->
+	<div id="floor-index" class="floor-index">
+		<ul>
+			<li>
+				<a class="num" href="javascript:;" style="display: none;">1F</a>
+				<a class="word" href="javascript;;" style="display: block;">家用电器</a>
+			</li>
+			<li>
+				<a class="num" href="javascript:;" style="display: none;">2F</a>
+				<a class="word" href="javascript;;" style="display: block;">手机通讯</a>
+			</li>
+			<li>
+				<a class="num" href="javascript:;" style="display: none;">3F</a>
+				<a class="word" href="javascript;;" style="display: block;">电脑办公</a>
+			</li>
+			<li>
+				<a class="num" href="javascript:;" style="display: none;">4F</a>
+				<a class="word" href="javascript;;" style="display: block;">家居家具</a>
+			</li>
+			<li>
+				<a class="num" href="javascript:;" style="display: none;">5F</a>
+				<a class="word" href="javascript;;" style="display: block;">运动户外</a>
+			</li>
+		</ul>
+	</div>
+	<div id="right-nav">
+		<div class="w">
+			<ul id="right-nav-list1">
+				<li><a><img src="img/_/index.png"></a><div>京东会员</div></li>
+				<li><a><img src="img/_/index1.png"></a><div>购物车</div></li>
+				<li><a><img src="img/_/index2.png"></a><div>我的关注</div></li>
+				<li><a><img src="img/_/index3.png"></a><div>我的足迹</div></li>
+				<li><a><img src="img/_/index4.png"></a><div>我的消息</div></li>
+				<li><a><img src="img/_/index5.png"></a><div>咨询JIMI</div></li>
+				<!--<li><a><img src="img/public/5_18.png"></a><div>京东会员</div></li>-->
+			</ul>
+			<ul id="right-nav-list2">
+				<li><a><img src="img/_/index6.png"></a><div>顶部</div></li>
+				<li><a><img src="img/_/index7.png"></a><div>反馈</div></li>
+			</ul>
+		</div>
+	</div>
+	<!--购物车单元格 模板-->
+>>>>>>> 7ebc0c77260d27b80a086f6b677ae545ec816ce5
 <script type="text/template" id="tbar-cart-item-template">
     <div class="tbar-cart-item">
         <div class="jtc-item-promo">
