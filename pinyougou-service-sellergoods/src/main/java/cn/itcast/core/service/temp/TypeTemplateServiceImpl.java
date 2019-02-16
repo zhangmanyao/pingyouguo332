@@ -68,6 +68,9 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
         if (typeTemplate.getAuditStatus() != null && !"".equals(typeTemplate.getAuditStatus().trim())) {
             // select id,name,first_char from tb_brand where name like "%"?"%" and first_char = ?
             criteria.andAuditStatusEqualTo(typeTemplate.getAuditStatus().trim());
+            typeTemplateQuery.createCriteria().andNameLike("%" + typeTemplate.getName().trim() + "%");
+        }if(typeTemplate.getAuditStatus() != null && !"".equals(typeTemplate.getAuditStatus().trim())){
+            typeTemplateQuery.createCriteria().andNameLike("%" + typeTemplate.getAuditStatus().trim() + "%");
         }
         // 3、根据条件查询
         Page<TypeTemplate> p = (Page<TypeTemplate>) typeTemplateDao.selectByExample(typeTemplateQuery);

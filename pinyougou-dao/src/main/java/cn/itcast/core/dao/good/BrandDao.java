@@ -19,7 +19,8 @@ public interface BrandDao {
     int insertSelective(Brand record);
 
     List<Brand> selectByExample(BrandQuery example);
-
+//@Select("select * from tb_brand")
+    List<Brand> findAll();
     Brand selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") Brand record, @Param("example") BrandQuery example);

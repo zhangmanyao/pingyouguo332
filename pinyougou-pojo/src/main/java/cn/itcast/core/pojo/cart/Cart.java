@@ -1,10 +1,13 @@
 package cn.itcast.core.pojo.cart;
 
+
 import cn.itcast.core.pojo.order.OrderItem;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+
+
 
 /**
  * 创建的购物车对象
