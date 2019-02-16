@@ -22,6 +22,7 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     /**
      * 商品分类的列表查询
+     *
      * @param parentId
      * @return
      */
@@ -30,7 +31,7 @@ public class ItemCatServiceImpl implements ItemCatService {
 
         // 点击列表查询的时候将数据写到缓存中
         List<ItemCat> itemCats = itemCatDao.selectByExample(null);
-        if(itemCats != null && itemCats.size() > 0){
+        if (itemCats != null && itemCats.size() > 0) {
             for (ItemCat itemCat : itemCats) {
                 // 将分类名称---模板id存储到redis中
                 redisTemplate.boundHashOps("itemCat").put(itemCat.getName(), itemCat.getTypeId());
@@ -44,6 +45,7 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     /**
      * 通过分类加载出模板id
+     *
      * @param id
      * @return
      */
@@ -54,6 +56,7 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     /**
      * 查询所有的分类并且显示分类名称
+     *
      * @return
      */
     @Override
@@ -63,6 +66,7 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     /**
      * 新增分类
+     *
      * @param itemCat
      */
     @Override
@@ -70,10 +74,10 @@ public class ItemCatServiceImpl implements ItemCatService {
         itemCatDao.insertSelective(itemCat);
     }
 
-<<<<<<< HEAD
-=======
+
     /**
      * 分类审核
+     *
      * @param ids
      * @param status
      */
@@ -90,5 +94,4 @@ public class ItemCatServiceImpl implements ItemCatService {
             }
         }
     }
->>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
 }

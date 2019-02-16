@@ -30,6 +30,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 列表查询
+     *
      * @param page
      * @param rows
      * @param specification
@@ -43,11 +44,15 @@ public class SpecServiceImpl implements SpecService {
         SpecificationQuery specificationQuery = new SpecificationQuery();
         // 封装查询条件：其始就是在给我们拼接查询条件
         SpecificationQuery.Criteria criteria = specificationQuery.createCriteria();
-        if(specification.getSpecName() != null && !"".equals(specification.getSpecName().trim())){
-            criteria.andSpecNameLike("%" + specification.getSpecName().trim() +"%");
+        if (specification.getSpecName() != null && !"".equals(specification.getSpecName().trim())) {
+            criteria.andSpecNameLike("%" + specification.getSpecName().trim() + "%");
         }
-        if(specification.getAuditStatus() != null && !"".equals(specification.getAuditStatus().trim())){
+        if (specification.getAuditStatus() != null && !"".equals(specification.getAuditStatus().trim())) {
             criteria.andAuditStatusEqualTo(specification.getAuditStatus().trim());
+            specificationQuery.createCriteria().andSpecNameLike("%" + specification.getSpecName().trim() + "%");
+        }
+        if (specification.getAuditStatus() != null && !"".equals(specification.getAuditStatus().trim())) {
+            specificationQuery.createCriteria().andSpecNameLike("%" + specification.getAuditStatus().trim() + "%");
         }
         specificationQuery.setOrderByClause("id desc");
         // 3、根据条件查询
@@ -58,6 +63,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 新增规格
+     *
      * @param specVo
      */
     @Transactional
@@ -68,7 +74,7 @@ public class SpecServiceImpl implements SpecService {
         specificationDao.insertSelective(specification);    // 配置返回自增主键id
         // 保存规格选项-外键-规格id
         List<SpecificationOption> specificationOptionList = specVo.getSpecificationOptionList();
-        if(specificationOptionList != null && specificationOptionList.size() > 0){
+        if (specificationOptionList != null && specificationOptionList.size() > 0) {
             for (SpecificationOption specificationOption : specificationOptionList) {
                 // 设置外键
                 specificationOption.setSpecId(specification.getId());
@@ -81,6 +87,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 回显规格
+     *
      * @param id
      * @return
      */
@@ -101,6 +108,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 更新规格
+     *
      * @param specVo
      */
     @Transactional
@@ -116,7 +124,7 @@ public class SpecServiceImpl implements SpecService {
         specificationOptionDao.deleteByExample(specificationOptionQuery);
         // 再插入
         List<SpecificationOption> specificationOptionList = specVo.getSpecificationOptionList();
-        if(specificationOptionList != null && specificationOptionList.size() > 0){
+        if (specificationOptionList != null && specificationOptionList.size() > 0) {
             for (SpecificationOption specificationOption : specificationOptionList) {
                 // 设置外键
                 specificationOption.setSpecId(specification.getId());
@@ -129,12 +137,13 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 批量删除规格
+     *
      * @param ids
      */
     @Transactional
     @Override
     public void delete(Long[] ids) {
-        if(ids != null && ids.length > 0){
+        if (ids != null && ids.length > 0) {
             for (Long id : ids) {
                 // 先删除规格选项
                 SpecificationOptionQuery specificationOptionQuery = new SpecificationOptionQuery();
@@ -148,6 +157,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 新增模板时初始化规格列表
+     *
      * @return
      */
     @Override
@@ -157,6 +167,7 @@ public class SpecServiceImpl implements SpecService {
 
     /**
      * 规格审核
+     *
      * @param ids
      * @param status
      */

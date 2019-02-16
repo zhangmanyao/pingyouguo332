@@ -62,13 +62,10 @@ public interface BrandService {
      */
     public List<Map<String, String>> selectOptionList();
 
-<<<<<<< HEAD
-=======
     /**
      * 品牌审核
      * @param ids
      * @param status
      */
     void updateStatus(Long[] ids, String status);
->>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
 }
