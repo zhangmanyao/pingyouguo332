@@ -1,7 +1,9 @@
 package cn.itcast.core.service.pay;
 
 import cn.itcast.core.dao.log.PayLogDao;
+import cn.itcast.core.dao.order.OrderDao;
 import cn.itcast.core.pojo.log.PayLog;
+import cn.itcast.core.pojo.order.Order;
 import cn.itcast.core.utils.http.HttpClient;
 import cn.itcast.core.utils.uniquekey.IdWorker;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +42,9 @@ public class PayServiceImpl implements PayService {
 
     @Resource
     private PayLogDao payLogDao;
+
+    @Resource
+    private OrderDao orderDao;
 
     /**
      * 生成支付的二维码
@@ -136,7 +143,72 @@ public class PayServiceImpl implements PayService {
 
             // TODO 删除缓存中的日志
             // TODO 更新订单表的数据
+        }else if("FAIL".equals(trade_state)){
+            //商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；
+            map = close(out_trade_no);
+
+            PayLog payLog = new PayLog();
+            payLog.setOutTradeNo(out_trade_no);
+            payLog.setPayTime(new Date());  // 支付日期
+            payLog.setTransactionId(map.get("transaction_id")); // 第三方的提供的流水
+            payLog.setTradeState("1");  // 支付成功
+            payLogDao.updateByPrimaryKeySelective(payLog);
+
+            // TODO 删除缓存中的日志
+            // TODO 更新订单表的数据
         }
         return map;
+    }
+
+    /**
+     * 订单提交后5m内未支付，则关闭订单
+     * @param orderId
+     * @return
+     */
+    public Map<String ,String> closePay(String orderId) throws Exception {
+
+        // 系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。
+        System.out.println("开始计时");
+        Thread.sleep(100000);
+        System.out.println("结束计时");
+
+        Map map = close(orderId);
+        if ("FAIL".equals(map.get("return_code"))){
+            close(orderId);
+        }
+        if ("SUCCESS".equals(map.get("return_code"))){
+            System.out.println(map.get("return_code"));
+            Order order = new Order();
+            order.setOrderId(Long.parseLong(orderId));
+            order.setStatus("5");
+            orderDao.updateByPrimaryKey(order);
+        }
+        return map;
+    }
+
+    private Map close(String orderId) throws Exception {
+
+        String url = "https://api.mch.weixin.qq.com/pay/closeorder";
+        HashMap<String, String> data = new HashMap<>();
+        // 公众账号ID	appid	是	String(32)	wx8888888888888888	微信分配的公众账号ID（企业号corpid即为此appId）
+        data.put("appid",appid);
+        // 商户号	mch_id	是	String(32)	1900000109	微信支付分配的商户号
+        data.put("mch_id",partner);
+        // 商户订单号	out_trade_no	是	String(32)	1217752501201407033233368018	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
+        data.put("out_trade_no",orderId);
+        // 随机字符串	nonce_str	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，不长于32位。推荐随机数生成算法
+        data.put("nonce_str",WXPayUtil.generateNonceStr());
+        // 签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
+        // 2、将map转成xml格式的数据
+        String xmlParam = WXPayUtil.generateSignedXml(data, partnerkey);
+        // 3、通过httpclient模拟浏览器发送请求
+        HttpClient httpClient = new HttpClient(url);
+        httpClient.setHttps(true);          // 之前https
+        httpClient.setXmlParam(xmlParam);   // 接口需要的参数
+        httpClient.post();                  // post提交
+        // 4、获取响应的结果：将xml转成map
+        String strXML = httpClient.getContent();   // 响应结果：xml
+        return WXPayUtil.xmlToMap(strXML);
+        // 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
     }
 }
