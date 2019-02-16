@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public class CartController {
                     if("BUYER_CART".equals(cookie.getName())){
                         // 3、本地有购物车，需要取出来
                         String text = cookie.getValue(); // 购物车的json串
-                        cartList = JSON.parseArray(text, Cart.class);
+                        cartList = JSON.parseArray(URLDecoder.decode(text,"UTF-8"), Cart.class);
                         flag = true;
                         break;  // 一旦找到购物车，直接跳出循环
                     }
@@ -115,7 +117,7 @@ public class CartController {
                 }
             }else{
                 // 6-2、未登录：保存到客户端
-                Cookie cookie = new Cookie("BUYER_CART", JSON.toJSONString(cartList));
+                Cookie cookie = new Cookie("BUYER_CART", URLEncoder.encode(JSON.toJSONString(cartList),"UTF-8"));
                 cookie.setPath("/"); // cookie共享
                 cookie.setMaxAge(60 * 60);
                 response.addCookie(cookie);
@@ -132,7 +134,7 @@ public class CartController {
      * @return
      */
     @RequestMapping("/findCartList.do")
-    public List<Cart> findCartList(HttpServletRequest request, HttpServletResponse response){
+    public List<Cart> findCartList(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         // 未登录：从cookie中获取
         List<Cart> cartList = null;
         Cookie[] cookies = request.getCookies();
@@ -140,7 +142,7 @@ public class CartController {
             for (Cookie cookie : cookies) {
                 if("BUYER_CART".equals(cookie.getName())){
                     String text = cookie.getValue(); // 购物车的json串
-                    cartList = JSON.parseArray(text, Cart.class);
+                    cartList = JSON.parseArray(URLDecoder.decode(text,"UTF-8"), Cart.class);
                     break;
                 }
             }

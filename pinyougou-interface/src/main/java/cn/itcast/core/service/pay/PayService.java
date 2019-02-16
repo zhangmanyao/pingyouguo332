@@ -16,4 +16,11 @@ public interface PayService {
      * @return
      */
     public Map<String, String> queryPayStatus(String out_trade_no) throws Exception;
+
+    /**
+     * 关闭支付接口2
+     * @param orderId
+     * @return
+     */
+    public Map<String ,String> closePay(String orderId)  throws Exception;
 }

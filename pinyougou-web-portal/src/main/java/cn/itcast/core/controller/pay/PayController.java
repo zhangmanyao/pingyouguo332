@@ -41,7 +41,7 @@ public class PayController {
                 if("SUCCESS".equals(trade_state)){
                     // 交易成功
                     return new Result(true, "支付成功");
-                }else{
+                } else{
                     // 其他的状态
                     Thread.sleep(5000);
                     time++;

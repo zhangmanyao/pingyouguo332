@@ -23,7 +23,7 @@ app.controller('cartController',function($scope,cartService){
 		);		
 	}
 	
-
+/*
 	
 	//获取当前用户的地址列表
 	$scope.findAddressList=function(){
@@ -54,8 +54,9 @@ app.controller('cartController',function($scope,cartService){
 			return false;
 		}		
 	}
-	
+	*/
 	$scope.order={paymentType:'1'};//订单对象
+    $scope.address={address:'bj',mobile:'shoujihao',contact:'ziji'};//订单对象
 	
 	//选择支付类型
 	$scope.selectPayType=function(type){
