@@ -12,6 +12,6 @@
     <dubbo:protocol name="dubbo" port="20881"/>
     <dubbo:application name="pinyougou-service-search"/>
     <dubbo:registry address="zookeeper://192.168.200.128:2181"/>
-    <dubbo:annotation package="cn.itcast.core.service" />
+    <dubbo:annotation package="cn.itcast.core.service"/>
 
 </beans>

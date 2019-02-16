@@ -121,11 +121,12 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 	}
 
 
-    //查询商品分类信息
+//查询商品分类信息
     $scope.findItemCatList=function () {
         itemCatService.findItemCatList().success(function (response) {
             $scope.itemCatList=response;
         })
     }
-    
+
+
 });	

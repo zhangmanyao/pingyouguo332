@@ -31,10 +31,4 @@ public interface ItemCatService {
      * @param itemCat
      */
     public void add(ItemCat itemCat);
-
-    /**
-     * 查询商品分类信息
-     * @return
-     */
-    List<ItemCat> findItemCatList();
 }
