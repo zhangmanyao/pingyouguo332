@@ -3,8 +3,10 @@ package cn.itcast.core.service.temp;
 import cn.itcast.core.dao.specification.SpecificationOptionDao;
 import cn.itcast.core.dao.template.TypeTemplateDao;
 import cn.itcast.core.entity.PageResult;
+import cn.itcast.core.pojo.specification.Specification;
 import cn.itcast.core.pojo.specification.SpecificationOption;
 import cn.itcast.core.pojo.specification.SpecificationOptionQuery;
+import cn.itcast.core.pojo.specification.SpecificationQuery;
 import cn.itcast.core.pojo.template.TypeTemplate;
 import cn.itcast.core.pojo.template.TypeTemplateQuery;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -58,8 +60,14 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
         PageHelper.startPage(page, rows);
         // 2、设置查询条件
         TypeTemplateQuery typeTemplateQuery = new TypeTemplateQuery();
+        // 封装查询条件：其始就是在给我们拼接查询条件
+        TypeTemplateQuery.Criteria criteria = typeTemplateQuery.createCriteria();
         if(typeTemplate.getName() != null && !"".equals(typeTemplate.getName().trim())){
-            typeTemplateQuery.createCriteria().andNameLike("%" + typeTemplate.getName().trim() + "%");
+            criteria.andNameLike("%" + typeTemplate.getName().trim() + "%");
+        }
+        if (typeTemplate.getAuditStatus() != null && !"".equals(typeTemplate.getAuditStatus().trim())) {
+            // select id,name,first_char from tb_brand where name like "%"?"%" and first_char = ?
+            criteria.andAuditStatusEqualTo(typeTemplate.getAuditStatus().trim());
         }
         // 3、根据条件查询
         Page<TypeTemplate> p = (Page<TypeTemplate>) typeTemplateDao.selectByExample(typeTemplateQuery);
@@ -121,5 +129,24 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
     @Override
     public List<TypeTemplate> findAll() {
         return typeTemplateDao.selectByExample(null);
+    }
+
+    /**
+     * 模板审核
+     * @param ids
+     * @param status
+     */
+    @Transactional
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        if (ids != null && ids.length > 0) {
+            TypeTemplate typeTemplate = new TypeTemplate();
+            typeTemplate.setAuditStatus(status);
+            for (final Long id : ids) {
+                typeTemplate.setId(id);
+                //更新商品审核状态
+                typeTemplateDao.updateByPrimaryKeySelective(typeTemplate);
+            }
+        }
     }
 }

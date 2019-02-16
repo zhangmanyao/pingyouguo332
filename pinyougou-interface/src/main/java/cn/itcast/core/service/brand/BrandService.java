@@ -61,4 +61,11 @@ public interface BrandService {
      * @return
      */
     public List<Map<String, String>> selectOptionList();
+
+    /**
+     * 品牌审核
+     * @param ids
+     * @param status
+     */
+    void updateStatus(Long[] ids, String status);
 }
