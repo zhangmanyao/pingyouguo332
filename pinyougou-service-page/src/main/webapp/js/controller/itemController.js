@@ -77,6 +77,21 @@ app.controller("itemController",function($scope,$http){
 					}						
 				);
 	}
+    // 收藏商品:携带的数据库存id
+    // {'withCredentials':true}：携带cookie信息
+    $scope.ToCollect=function(){
+        //alert('SKUID:'+$scope.sku.id );
+        $http.get('http://localhost:9103/goods/collectGoodsToRedis.do?itemId='
+            +$scope.sku.id,{'withCredentials':true} ).success(
+            function(response){
+                if(response.flag){
+                    location.href='http://localhost:9103/collect.html';
+                }else{
+                    alert(response.message);
+                }
+            }
+        );
+    }
 	
 	
 });

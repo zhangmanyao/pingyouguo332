@@ -1,8 +1,11 @@
 package cn.itcast.core.service.goods;
 
 import cn.itcast.core.entity.PageResult;
+import cn.itcast.core.pojo.cart.Cart;
 import cn.itcast.core.pojo.good.Goods;
 import cn.itcast.core.vo.GoodsVo;
+
+import java.util.List;
 
 public interface GoodsService {
 
@@ -55,4 +58,18 @@ public interface GoodsService {
      * @param ids
      */
     public void delete(Long[] ids);
+
+    /**
+     * 收藏商品到缓存
+     * @param itemId
+     */
+
+    void collectGoodsToRedis(Long itemId,String username);
+
+    /**
+     * 查询收藏商品从缓存中
+     * @param username
+     * @return
+     */
+    List<Long> findcollectGoodsFromRedis(String username);
 }

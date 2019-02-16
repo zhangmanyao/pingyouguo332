@@ -1,5 +1,8 @@
 package cn.itcast.core.pojo.order;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -8,11 +11,13 @@ public class Order implements Serializable {
     /**
      * 订单id
      */
+    @JSONField(serializeUsing= ToStringSerializer.class)
     private Long orderId;
 
     /**
      * 实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分
      */
+    @JSONField(serializeUsing= ToStringSerializer.class)
     private BigDecimal payment;
 
     /**

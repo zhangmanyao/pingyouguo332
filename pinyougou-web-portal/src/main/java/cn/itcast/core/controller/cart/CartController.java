@@ -40,7 +40,7 @@ public class CartController {
      */
     @RequestMapping("/addGoodsToCartList.do")
 //    @CrossOrigin(origins = {"http://localhost:9003"}, allowCredentials = "true")
-    @CrossOrigin(origins = {"http://localhost:9003"})
+    @CrossOrigin(origins = {"http://localhost:9005"})
     public Result addGoodsToCartList(Long itemId, Integer num,
                                      HttpServletRequest request, HttpServletResponse response){
         try {
