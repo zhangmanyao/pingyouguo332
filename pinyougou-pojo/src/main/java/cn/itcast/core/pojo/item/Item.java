@@ -78,28 +78,20 @@ public class Item implements Serializable {
     private BigDecimal marketPrice;
 
     private String isDefault;
-
     @Field("item_goodsid")
     private Long goodsId;
 
     private String sellerId;
 
     private String cartThumbnail;
-
     @Field("item_category")
     private String category;
-
     @Field("item_brand")
     private String brand;
 
     private String spec;
-
     @Field("item_seller")
     private String seller;
-
-    @Dynamic
-    @Field("item_spec_*")
-    private Map<String, String> specMap;
 
     public Map<String, String> getSpecMap() {
         return specMap;
@@ -109,6 +101,9 @@ public class Item implements Serializable {
         this.specMap = specMap;
     }
 
+    @Dynamic
+    @Field("item_spec_*")
+    private Map<String, String> specMap;
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
