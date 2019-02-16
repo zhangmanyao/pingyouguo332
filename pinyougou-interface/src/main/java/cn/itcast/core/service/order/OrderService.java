@@ -3,6 +3,8 @@ package cn.itcast.core.service.order;
 import cn.itcast.core.entity.PageResult;
 import cn.itcast.core.pojo.order.Order;
 
+import java.util.List;
+
 public interface OrderService {
 
     /**
@@ -15,4 +17,6 @@ public interface OrderService {
     void updateOrderStatus(Long[] ids, String status);
 
     PageResult searchForShop(Integer page, Integer rows, Order order);
+
+    List<Order> findOrderByUserid(String userId);
 }

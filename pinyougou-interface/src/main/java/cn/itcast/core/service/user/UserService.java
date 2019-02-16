@@ -33,16 +33,4 @@ public interface UserService {
      * @param status
      */
     void updateStatus(String userId, String status);
-
-    /**
-     * 用户总人数
-     * @return
-     */
-    Integer findAllPeople();
-
-    /**
-     * 女性用户
-     * @return
-     */
-    Integer findGirls();
 }

@@ -1,6 +1,7 @@
 package cn.itcast.core.service.user;
 
 import cn.itcast.core.dao.user.UserDao;
+import cn.itcast.core.entity.PageResult;
 import cn.itcast.core.pojo.user.User;
 import cn.itcast.core.utils.md5.MD5Util;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -75,5 +76,15 @@ public class UserServiceImpl implements UserService {
         }else{
             throw new RuntimeException("验证码不正确");
         }
+    }
+
+    @Override
+    public PageResult search(Integer page, Integer rows, User user) {
+        return null;
+    }
+
+    @Override
+    public void updateStatus(String userId, String status) {
+
     }
 }

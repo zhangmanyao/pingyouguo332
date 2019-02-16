@@ -81,6 +81,12 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> page = (Page<Order>)orderDao.selectByExample(orderQuery);
         return new PageResult(page.getResult(),page.getTotal());
     }
+
+    @Override
+    public List<Order> findOrderByUserid(String userId) {
+        return null;
+    }
+
     @Transactional
     @Override
     public void updateOrderStatus(Long[] ids,String status) {
