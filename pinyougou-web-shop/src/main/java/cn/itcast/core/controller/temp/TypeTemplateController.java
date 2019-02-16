@@ -39,5 +39,40 @@ public class TypeTemplateController {
         return typeTemplateService.findBySpecList(id);
     }
 
+    /**
+     * 模板列表查询
+     * @param page
+     * @param rows
+     * @param typeTemplate
+     * @return
+     */
+    @RequestMapping("/search.do")
+    public PageResult search(Integer page, Integer rows, @RequestBody TypeTemplate typeTemplate){
+        return typeTemplateService.search(page, rows, typeTemplate);
+    }
 
+    /**
+     * 保存模板
+     * @param typeTemplate
+     * @return
+     */
+    @RequestMapping("/add.do")
+    public Result add(@RequestBody TypeTemplate typeTemplate){
+        try {
+            typeTemplateService.add(typeTemplate);
+            return new Result(true, "保存成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "保存失败");
+        }
+    }
+
+    /**
+     * 新增分类时获取模板的下拉框列表
+     * @return
+     */
+    @RequestMapping("/findAll.do")
+    public List<TypeTemplate> findAll(){
+        return typeTemplateService.findAll();
+    }
 }
