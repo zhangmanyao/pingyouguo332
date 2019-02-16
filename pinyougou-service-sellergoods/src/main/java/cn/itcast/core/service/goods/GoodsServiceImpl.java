@@ -394,7 +394,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @param username
      * @return
      */
-    //测试
+    //测试2
     @Override
     public List<Long> findcollectGoodsFromRedis(String username) {
         return (List<Long>) redisTemplate.boundHashOps("Collection").get(username);
