@@ -110,7 +110,7 @@ public class BrandController {
     }
 
     /**
-     * 新增规格时初始化品牌列表qqqqqq
+     * 新增规格时初始化品牌列表4444444444444
      * @return
      */
     @RequestMapping("/selectOptionList.do")
