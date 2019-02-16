@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
                 mapMessage.setString("signName", "阮文");
                 mapMessage.setString("templateCode", "SMS_140720901");
                 mapMessage.setString("templateParam", "{\"code\":\""+code+"\"}");
+                System.out.println(code);
                 return mapMessage;
             }
         });
