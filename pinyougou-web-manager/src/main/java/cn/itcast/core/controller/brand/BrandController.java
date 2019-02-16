@@ -121,8 +121,6 @@ public class BrandController {
     /**
      * 审核商品
      * @param ids
-     * @param status
-     * @return
      */
     @RequestMapping("/updateStatus.do")
     public Result updateStatus(Long[] ids, String status){
