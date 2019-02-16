@@ -70,8 +70,6 @@ public class ItemCatServiceImpl implements ItemCatService {
         itemCatDao.insertSelective(itemCat);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * 分类审核
      * @param ids
@@ -90,5 +88,4 @@ public class ItemCatServiceImpl implements ItemCatService {
             }
         }
     }
->>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
 }
