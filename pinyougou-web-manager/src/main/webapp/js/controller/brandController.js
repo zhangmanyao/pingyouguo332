@@ -85,9 +85,6 @@ app.controller("brandController", function ($scope, $controller, brandService) {
         location.href="../brand/export.do";
         //brandService.export();
     }
-
-<<<<<<< HEAD
-=======
 	// 分页查询
 	$scope.findPage = function(page,rows){
 		// 向后台发送请求获取数据:
@@ -171,6 +168,4 @@ app.controller("brandController", function ($scope, $controller, brandService) {
             }
         });
     }
-	
->>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
 });

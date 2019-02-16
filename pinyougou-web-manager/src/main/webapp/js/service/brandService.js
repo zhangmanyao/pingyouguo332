@@ -31,14 +31,7 @@ app.service("brandService",function($http){
 	this.selectOptionList = function(){
 		return $http.get("../brand/selectOptionList.do");
 	}
-
-<<<<<<< HEAD
-    /*this.export = function(){
-        return $http.get("../brand/export.do");
-    }*/
-=======
     this.updateStatus = function(ids,status){
         return $http.get('../brand/updateStatus.do?ids='+ids+"&status="+status);
     }
->>>>>>> 2079a3bb234316c222fbeeb946c7c84205d7973b
 });
