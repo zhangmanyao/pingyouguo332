@@ -28,6 +28,7 @@
     <result column="source_type" property="sourceType" jdbcType="VARCHAR" />
     <result column="seller_id" property="sellerId" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -530,4 +531,13 @@
       seller_id = #{sellerId,jdbcType=VARCHAR}
     where order_id = #{orderId,jdbcType=BIGINT}
   </update>
+
+<!--
+
+  <select id="selectOrderVoByExample" parameterType="cn.itcast.core.pojo.order.OrderQuery" resultMap="OrderVoResultMap" >
+    SELECT * FROM tb_order_item oi ,tb_goods g WHERE oi.goods_id = g.id AND oi.goods_id = $
+  </select>
+-->
+
+
 </mapper>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新订单</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!--时间控件-->
+    <link rel="stylesheet" type="text/css" href="../css/time/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../css/time/demo.css">
+    <link rel="stylesheet" type="text/css" href="../css/time/icon.css">
+
+    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!--时间控件-->
+    <script type="text/javascript" src="../js/time/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/time/jquery.min.js"></script>
+
+    <!-- 引入angular的js -->
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+    <!-- 引入分页相关的JS和CSS -->
+    <script type="text/javascript" src="../plugins/angularjs/pagination.js"></script>
+    <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
+
+    <script type="text/javascript" src="../js/base_pagination.js"></script>
+    <script type="text/javascript" src="../js/controller/baseController.js"></script>
+    <script type="text/javascript" src="../js/controller/orderController.js"></script>
+    <script type="text/javascript" src="../js/service/orderService.js"></script>
+
+</head>
+
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController" ng-init="createTime='1'">
+<!-- .box-body -->
+
+<div class="box-header with-border">
+    <h3 class="box-title">商品审核</h3>
+</div>
+
+<div class="box-body">
+
+    <!-- 数据表格 -->
+    <div class="table-box">
+
+        <div class="box-tools pull-right">
+            <!--<input class="has-feedback">-->
+                <!--状态：1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭,7、待评价-->
+                状态：<select ng-model="searchEntity.status">
+                <option value="">全部</option>
+                <option value="0">未付款</option>
+                <option value="1">已付款</option>
+                <option value="2">未发货</option>
+                <option value="3">已发货</option>
+                <option value="4">交易成功</option>
+                <option value="5">交易关闭</option>
+                <option value="6">待评价</option>
+            </select>
+                时间范围：<select ng-model="createTime">
+                <option value="">全部</option>
+                <option value="1">一天内</option>
+                <option value="2">一周内</option>
+                <option value="3">一月内</option>
+                <option value="4">三个月内</option>
+                <option value="5">半年内</option>
+                <option value="6">一年内</option>
+                <option value="7">一年以上</option>
+            </select>
+                付款时间：<!--<div style="margin: 10px 0;"></div>-->
+                <input class="easyui-datebox" required data-options="validType:'md[\'10/11/2012\']'"  ng-model="searchEntity.createTimeStr" />
+                <script>
+                    $.extend($.fn.validatebox.defaults.rules,{
+                        md:{
+                            validator:function (value,param) {
+                                var d1 = $.fn.datebox.defaults.parser(param[0]);
+                                var d2 = $.fn.datebox.defaults.parser(value);
+                                return d2<=d1
+                            },
+                            message:'The date must be less than or equals to {0}.'
+                        }
+                    })
+                </script>
+                <input class="btn btn-default" ng-click="reloadList()" type="button" value="查询">
+            </div>
+        </div>
+        <!--工具栏/-->
+
+        <!--数据列表-->
+        <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+            <thead>
+            <tr>
+                <th class="" style="padding-right:0px">
+                    <input id="selall" type="checkbox" class="icheckbox_square-blue">
+                </th>
+                <th class="sorting_asc">订单id</th>
+                <th class="sorting">商家id</th>
+                <th class="sorting">用户id</th>
+                <th class="sorting">物流名称</th>
+                <th class="sorting">支付类型</th>
+                <th class="sorting">付款时间</th>
+                <th class="sorting">订单来源</th>
+                <th class="sorting">状态</th>
+                <th class="text-center">查看</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="entity in list">
+                <td><input  type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
+                <td>{{entity.orderId}}</td>
+                <td>{{entity.sellerId}}</td>
+                <td>{{entity.userId}}</td>
+                <td>{{entity.shippingName}}</td>
+                <td>{{entity.paymentType}}</td>
+                <td>{{entity.paymentTime}}</td>
+                <td>{{entity.sourceType}}</td>
+                <td>
+		            <span>{{status[entity.auditStatus]}}</span>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn bg-olive btn-xs" >详情</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <!--数据列表/-->
+
+
+    </div>
+    <!-- 数据表格 /-->
+    <!-- 分页 -->
+    <tm-pagination conf="paginationConf"></tm-pagination>
+
+</div>
+<!-- /.box-body -->
+
+</body>
+
+
+</html>

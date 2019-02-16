@@ -1,5 +1,6 @@
 package cn.itcast.core.dao.order;
 
+import cn.itcast.core.pojo.good.Goods;
 import cn.itcast.core.pojo.order.OrderItem;
 import cn.itcast.core.pojo.order.OrderItemQuery;
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,5 @@ public interface OrderItemDao {
     int updateByPrimaryKeySelective(OrderItem record);
 
     int updateByPrimaryKey(OrderItem record);
+
 }

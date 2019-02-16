@@ -1,11 +1,19 @@
  //控制层 
+<<<<<<< HEAD
 app.controller('orderController' ,function($scope,$controller,$orderService){
+=======
+app.controller('orderController' ,function($scope,$controller,orderService){
+>>>>>>> byy1
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
     //读取列表数据绑定到表单中  
 	$scope.findAll=function(){
+<<<<<<< HEAD
 		orderService.findAll().success(
+=======
+        orderService.findAll().success(
+>>>>>>> byy1
 			function(response){
 				$scope.list=response;
 			}			
@@ -13,8 +21,13 @@ app.controller('orderController' ,function($scope,$controller,$orderService){
 	}    
 	
 	//分页
+<<<<<<< HEAD
 	$scope.findPage=function(page,rows){			
 		orderService.findPage(page,rows).success(
+=======
+	$scope.findPage=function(page,rows){
+        orderService.findPage(page,rows).success(
+>>>>>>> byy1
 			function(response){
 				$scope.list=response.rows;	
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
@@ -23,14 +36,20 @@ app.controller('orderController' ,function($scope,$controller,$orderService){
 	}
 	
 	//查询实体 
+<<<<<<< HEAD
 	$scope.findOne=function(id){				
 		orderService.findOne(id).success(
+=======
+	$scope.findOne=function(id){
+        orderService.findOne(id).success(
+>>>>>>> byy1
 			function(response){
 				$scope.entity= response;					
 			}
 		);				
 	}
 	
+<<<<<<< HEAD
 	//保存 
 	$scope.save=function(){				
 		var serviceObject;//服务层对象  				
@@ -59,10 +78,20 @@ app.controller('orderController' ,function($scope,$controller,$orderService){
 	//搜索
 	$scope.search=function(page,rows){
         orderService.search(page,rows,$scope.searchEntity).success(
+=======
+	$scope.searchEntity={};//定义搜索对象
+
+	$scope.searchEntity.creatTimeStr=$filter("date")($scope.searchEntity.creatTimeStr,"yyyy-MM-dd")
+	
+	//搜索
+	$scope.search=function(page,rows){
+        /*orderService.statistics(page,rows,$scope.createTime,$scope.searchEntity).success(
+>>>>>>> byy1
 			function(response){
 				$scope.list=response.rows;	
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
+<<<<<<< HEAD
 		);
 	}
     
@@ -83,3 +112,23 @@ app.controller('orderController' ,function($scope,$controller,$orderService){
 		});
 	}
 });	
+=======
+		);*/
+
+        orderService.search(page,rows,$scope.minPrice,$scope.maxPrice,$scope.searchEntity).success(
+            function(response){
+                $scope.list=response.rows;
+                $scope.paginationConf.totalItems=response.total;//更新总记录数
+            }
+        );
+
+
+
+	}
+
+
+    
+	// 显示状态
+	$scope.status = ["未审核","审核通过","审核未通过","关闭"];
+});
+>>>>>>> byy1

@@ -17,8 +17,11 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 import javax.annotation.Resource;
+import javax.jms.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,8 +48,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Resource
     private PayLogDao payLogDao;
-
-
 
     /**
      * 商家查询订单
@@ -106,20 +107,26 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    @Resource
+    private JmsTemplate jmsTemplate;
+
+    @Resource
+    private Destination topicClosepayDestination;
+
     /**
      * 保存订单
      * @param username
      * @param order
      */
     @Override
-    public void add(String username, Order order) {
+    public void add(String username, final Order order) {
         // 保存订单：以商家为单位
         List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("BUYER_CART").get(username);
         if(cartList != null && cartList.size() > 0){
             double logTotalFee = 0f;
             List<Long> orderList = new ArrayList<>();   // 保存订单号
             for (Cart cart : cartList) {
-                long orderId = idWorker.nextId();
+                final long orderId = idWorker.nextId();
                 orderList.add(orderId);
                 order.setOrderId(orderId);  // 订单主键
                 double payment = 0f;        // 该商家下的订单总金额
@@ -153,6 +160,16 @@ public class OrderServiceImpl implements OrderService {
                 order.setPayment(new BigDecimal(payment));
                 // 保存订单
                 orderDao.insertSelective(order);
+
+                //提交订单后将订单放入mq中，等待5m后未付款则关闭订单
+                jmsTemplate.send(topicClosepayDestination, new MessageCreator() {
+                    @Override
+                    public Message createMessage(Session session) throws JMSException {
+                        // 将商品的id封装成消息体进行发送
+                        TextMessage textMessage = session.createTextMessage(String.valueOf(orderId));
+                        return textMessage;
+                    }
+                });
             }
 
             // 订单提交成功后，需要生成交易日志
@@ -169,9 +186,74 @@ public class OrderServiceImpl implements OrderService {
             redisTemplate.boundHashOps("paylog").put(username, payLog);
         }
 
-
         // 订单提交成功后，清空购物车
         redisTemplate.boundHashOps("BUYER_CART").delete(username);
     }
-    //添加一行注释
+
+    /**
+     * 运营商后台-订单统计
+     * @param page
+     * @param rows
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Override
+    public PageResult statistics(Integer page, Integer rows, Date startDate,Date endDate,Order order) {
+        // 1、设置分页条件
+        PageHelper.startPage(page, rows);
+        // 2、设置查询条件
+        OrderQuery orderQuery = new OrderQuery();
+        OrderQuery.Criteria criteria = orderQuery.createCriteria();
+        // 订单创建时间段
+        if (startDate!=null){
+            if (!startDate.equals(endDate)){
+                criteria.andCreateTimeBetween(startDate,endDate);
+            }else if (startDate.equals(endDate)){
+                criteria.andCreateTimeNotBetween(startDate,new Date());
+            }
+        }
+        // 订单状态
+        if (order.getStatus()!=null&&!"".equals(order.getStatus())){
+            criteria.andStatusEqualTo(order.getStatus());
+        }
+        // 订单创建时间
+        if (order.getCreateTime()!=null&&!"".equals(order.getCreateTime())){
+            criteria.andCreateTimeEqualTo(order.getCreateTime());
+        }
+        // 3、根据条件查询
+        List<Order> orders = orderDao.selectByExample(orderQuery);
+        Page<Order> p = (Page<Order>) orders;
+        // 4、封装结果
+
+        return new PageResult(p.getResult(), p.getTotal());
+    }
+
+    @Override
+    public PageResult search(Integer page, Integer rows, String minPrice, String maxPrice, Order order) {
+        // 1、设置分页条件
+        PageHelper.startPage(page, rows);
+        // 2、设置查询条件
+        OrderQuery orderQuery = new OrderQuery();
+        OrderQuery.Criteria criteria = orderQuery.createCriteria();
+        // 订单金额区间
+        if (minPrice!=null&&!"".equals(minPrice)){
+            criteria.andPaymentGreaterThan(new BigDecimal(Long.parseLong(minPrice)));
+        }
+        if (maxPrice!=null&&!"".equals(maxPrice)){
+            criteria.andPaymentLessThan(new BigDecimal(Long.parseLong(maxPrice)));
+        }
+        // 订单状态
+        if (order.getStatus()!=null&&!"".equals(order.getStatus())){
+            criteria.andStatusEqualTo(order.getStatus());
+        }
+        // 订单店铺名称
+        if (order.getSellerId()!=null&&!"".equals(order.getSellerId())){
+            criteria.andSellerIdLike(order.getSellerId());
+        }
+        // 3、根据条件查询
+        Page<Order> p = (Page<Order>) orderDao.selectByExample(orderQuery);
+        // 4、封装结果
+        return new PageResult(p.getResult(), p.getTotal());
+    }
 }

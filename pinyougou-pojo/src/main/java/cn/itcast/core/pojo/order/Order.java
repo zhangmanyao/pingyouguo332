@@ -41,6 +41,19 @@ public class Order implements Serializable {
     private Date createTime;
 
     /**
+     * 订单创建时间格式化处理
+     */
+    private String createTimeStr;
+
+    public String getCreatTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreatTimeStr(String creatTimeStr) {
+        this.createTimeStr = creatTimeStr;
+    }
+
+    /**
      * 订单更新时间
      */
     private Date updateTime;

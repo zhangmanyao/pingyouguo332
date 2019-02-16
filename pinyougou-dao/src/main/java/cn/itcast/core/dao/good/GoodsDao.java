@@ -28,4 +28,6 @@ public interface GoodsDao {
     int updateByPrimaryKeySelective(Goods record);
 
     int updateByPrimaryKey(Goods record);
+
+    List<Goods> selectGoodByPrimaryKey(Long orderId);
 }
